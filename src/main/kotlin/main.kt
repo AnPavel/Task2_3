@@ -1,4 +1,12 @@
-class Attachment
+interface Attachment {
+    var id: Int
+    var album_id: Int
+    var owner_id: Int
+    var user_id: Int
+}
+
+class photo(override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
+class video(override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
 
 data class Post(
     var id: Int,
@@ -75,19 +83,15 @@ object WallService {
         return posts.last()
     }
 
-
     fun update(post: Post): Boolean {
         var (id) = post
-        for ((index, post) in posts.withIndex()) {
-            if (post.id == id) {
-                posts[index] = post.copy(text = "update text", comments = "update comment", likes = post.likes + 100, canDelete = false, canEdit = false)
-                println(posts[index])
-                return true
-            }
+        for ((index, post) in posts.withIndex()) if (post.id == id) {
+            posts[index] = post.copy(text = "update text", comments = "update comment", likes = post.likes + 100, canDelete = false, canEdit = false)
+            println(posts[index])
+            return true
         }
         return false
     }
-
 
     fun idById(id: Int) {
         //перебор по всем чтобы найти нужный
@@ -101,14 +105,12 @@ object WallService {
         }
     }
 
-
     fun repost(post: Post): Post {
         if (post.original == null) {
             println("Это оригинальный пост")
         }
         return post
     }
-
 
 }
 
@@ -118,23 +120,23 @@ fun main() {
     val post = Post(0,11, 99, 20221010,"text post 0", "comment content", 0, null ,true,true)
     //val (id, fromId, _, published, text, content, likes) = post
     //println("$id, $fromId, $published, $text, $content, $likes")
-    var result = WallService.add(post)
-    //println(result)
+    WallService.add(post)
+    //println(WallService.add(post))
     val repost = Post(0,51, 88, 20221010,"text post 88", "comment content 88", 0, post ,true,true)
-    result = WallService.add(repost)
-    //println(result)
+    WallService.add(repost)
+    //println(WallService.add(repost))
 
     //новый объекты
     val postOne = post.copy(fromId = 12, text = "text post 1", likes = post.likes + 1, original = post)
-    result = WallService.add(postOne)
-    //println(result)
+    WallService.add(postOne)
+    //println(WallService.add(postOne))
     val postTwo = post.copy(fromId = 13, text = "text post 2", likes = post.likes + 2)
-    result = WallService.add(postTwo)
-    //println(result)
+    WallService.add(postTwo)
+    //println(WallService.add(postTwo))
 
     //изменим ранее созданный пост по id
     //WallService.idById(postOne.id)
-    println("--------")
+    println("-------- update post --------")
     println( WallService.update(postOne))
 
     WallService.repost(postOne)
