@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Bool
+
 interface Attachment {
     var id: Int
     var album_id: Int
@@ -8,6 +10,16 @@ interface Attachment {
 class photo(override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
 class video(override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
 
+data class Comment(
+    val Id: Int,
+    val from_Id: Int,
+    val date: Int,
+    val text: String,
+    val replay_to_user: Int,
+    val replay_to_comment: Int,
+    val attachment: Array<Attachment> = emptyArray()
+    //val postId: Int?
+)
 data class Post(
     var id: Int,
     val fromId: Int,
@@ -61,6 +73,7 @@ data class Post(
 object WallService {
 
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
     private var idPosts: Int = 1
 
     fun clear() {
@@ -93,16 +106,20 @@ object WallService {
         return false
     }
 
-    fun idById(id: Int) {
+    fun idById(id: Int): Boolean {
         //перебор по всем чтобы найти нужный
         //при этом получаем индекс
         for ((index, post) in posts.withIndex()) {
             if (post.id == id) {
-                println("делаем изменения для id = " + post.id)
-                posts[index] = post.copy(text = "update text update", comments = "update comment update", likes = post.likes + 10, canDelete = false, canEdit = false)
+                println("-------------------")
+                println(id)
+                return true
+                //println("делаем изменения для id = " + post.id)
+                //posts[index] = post.copy(text = "update text update", comments = "update comment update", likes = post.likes + 10, canDelete = false, canEdit = false)
                 //println("the element at $index is  $post")
             }
         }
+        return false
     }
 
     fun repost(post: Post): Post {
