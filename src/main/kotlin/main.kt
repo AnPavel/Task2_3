@@ -1,14 +1,29 @@
-import com.sun.org.apache.xpath.internal.operations.Bool
 
 interface Attachment {
+    var type: String
     var id: Int
     var album_id: Int
     var owner_id: Int
     var user_id: Int
 }
 
-class photo(override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
-class video(override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
+class Photo(override var type: String, override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
+class Video(override var type: String, override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
+
+data class VideoAttachment(override var type: String="video", var video: Video=Video("video",1,1,1,1),
+                           override var id: Int = 1,
+                           override var album_id: Int = 1,
+                           override var owner_id: Int = 1,
+                           override var user_id: Int = 1
+): Attachment
+
+data class PhotoAttachment(override var type: String="photo", var photo: Photo=Photo("photo",1,1,1,1),
+                           override var id : Int = 1,
+                           override var album_id: Int = 1,
+                           override var owner_id: Int = 1,
+                           override var user_id: Int = 1
+) : Attachment
+
 
 data class Comment(
     val Id: Int,
@@ -17,7 +32,7 @@ data class Comment(
     val text: String,
     val replay_to_user: Int,
     val replay_to_comment: Int,
-    val attachment: Array<Attachment> = emptyArray()
+    var attachments: Array<Attachment> = emptyArray()
     //val postId: Int?
 )
 data class Post(
