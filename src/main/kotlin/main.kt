@@ -1,27 +1,41 @@
-
 interface Attachment {
     var type: String
     var id: Int
-    var album_id: Int
-    var owner_id: Int
-    var user_id: Int
+    var albumId: Int
+    var ownerId: Int
+    var userId: Int
 }
 
-class Photo(override var type: String, override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
-class Video(override var type: String, override var id: Int, override var album_id: Int, override var owner_id: Int, override var user_id: Int) : Attachment
+data class Photo(
+    override var type: String,
+    override var id: Int,
+    override var albumId: Int,
+    override var ownerId: Int,
+    override var userId: Int
+) : Attachment
 
-data class VideoAttachment(override var type: String="video", var video: Video=Video("video",1,1,1,1),
-                           override var id: Int = 1,
-                           override var album_id: Int = 1,
-                           override var owner_id: Int = 1,
-                           override var user_id: Int = 1
-): Attachment
+data class Video(
+    override var type: String,
+    override var id: Int,
+    override var albumId: Int,
+    override var ownerId: Int,
+    override var userId: Int
+) : Attachment
 
-data class PhotoAttachment(override var type: String="photo", var photo: Photo=Photo("photo",1,1,1,1),
-                           override var id : Int = 1,
-                           override var album_id: Int = 1,
-                           override var owner_id: Int = 1,
-                           override var user_id: Int = 1
+data class VideoAttachment(
+    override var type: String = "video", var video: Video = Video("video", 1, 1, 1, 1),
+    override var id: Int = 1,
+    override var albumId: Int = 1,
+    override var ownerId: Int = 1,
+    override var userId: Int = 1
+) : Attachment
+
+data class PhotoAttachment(
+    override var type: String = "photo", var photo: Photo = Photo("photo", 1, 1, 1, 1),
+    override var id: Int = 1,
+    override var albumId: Int = 1,
+    override var ownerId: Int = 1,
+    override var userId: Int = 1
 ) : Attachment
 
 
@@ -35,6 +49,7 @@ data class Comment(
     var attachments: Array<Attachment> = emptyArray()
     //val postId: Int?
 )
+
 data class Post(
     var id: Int,
     val fromId: Int,
@@ -114,7 +129,13 @@ object WallService {
     fun update(post: Post): Boolean {
         var (id) = post
         for ((index, post) in posts.withIndex()) if (post.id == id) {
-            posts[index] = post.copy(text = "update text", comments = "update comment", likes = post.likes + 100, canDelete = false, canEdit = false)
+            posts[index] = post.copy(
+                text = "update text",
+                comments = "update comment",
+                likes = post.likes + 100,
+                canDelete = false,
+                canEdit = false
+            )
             println(posts[index])
             return true
         }
@@ -149,12 +170,12 @@ object WallService {
 
 fun main() {
 
-    val post = Post(0,11, 99, 20221010,"text post 0", "comment content", 0, null ,true,true)
+    val post = Post(0, 11, 99, 20221010, "text post 0", "comment content", 0, null, true, true)
     //val (id, fromId, _, published, text, content, likes) = post
     //println("$id, $fromId, $published, $text, $content, $likes")
     WallService.add(post)
     //println(WallService.add(post))
-    val repost = Post(0,51, 88, 20221010,"text post 88", "comment content 88", 0, post ,true,true)
+    val repost = Post(0, 51, 88, 20221010, "text post 88", "comment content 88", 0, post, true, true)
     WallService.add(repost)
     //println(WallService.add(repost))
 
@@ -169,7 +190,7 @@ fun main() {
     //изменим ранее созданный пост по id
     //WallService.idById(postOne.id)
     println("-------- update post --------")
-    println( WallService.update(postOne))
+    println(WallService.update(postOne))
 
     WallService.repost(postOne)
 }
